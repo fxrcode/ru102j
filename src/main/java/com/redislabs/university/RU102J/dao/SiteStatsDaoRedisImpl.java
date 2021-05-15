@@ -47,7 +47,8 @@ public class SiteStatsDaoRedisImpl implements SiteStatsDao {
             ZonedDateTime day = reading.getDateTime();
             String key = RedisSchema.getSiteStatsKey(siteId, day);
 
-            updateBasic(jedis, key, reading);
+//            updateBasic(jedis, key, reading);
+            updateOptimized(jedis, key, reading);  // Challenge #3 for week 2.
         }
     }
 
@@ -78,9 +79,22 @@ public class SiteStatsDaoRedisImpl implements SiteStatsDao {
         }
     }
 
-    // Challenge #3
+    /**
+     * Challenge #3: The objectives were to remove the race condition in the compare and set...
+     * logic by using a Lua script, and to reduce the number of round trips to Redis.
+     */
     private void updateOptimized(Jedis jedis, String key, MeterReading reading) {
         // START Challenge #3
+        Transaction t = jedis.multi();
+        String reportingTime = ZonedDateTime.now(ZoneOffset.UTC).toString();
+        t.hset(key, SiteStats.reportingTimeField, reportingTime);
+        t.hincrBy(key, SiteStats.countField, 1);
+        t.expire(key, weekSeconds);
+
+        this.compareAndUpdateScript.updateIfGreater(t, key, SiteStats.maxWhField, reading.getWhGenerated());
+        this.compareAndUpdateScript.updateIfLess(t, key, SiteStats.minWhField, reading.getWhGenerated());
+        this.compareAndUpdateScript.updateIfGreater(t, key, SiteStats.maxCapacityField, getCurrentCapacity(reading));
+        t.exec();
         // END Challenge #3
     }
 

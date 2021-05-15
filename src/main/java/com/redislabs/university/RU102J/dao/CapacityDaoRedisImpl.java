@@ -55,11 +55,19 @@ public class CapacityDaoRedisImpl implements CapacityDao {
         return report;
     }
 
-    // Challenge #4
+    /**
+     * Challenge #4: return the ranking of a given site's capacity,
+     * where 0 represents the site with the greatest capacity.
+     * @param siteId
+     * @return
+     */
     @Override
     public Long getRank(Long siteId) {
         // START Challenge #4
-        return -2L;
+        String key = RedisSchema.getCapacityRankingKey();
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.zrevrank(key, String.valueOf(siteId));
+        }
         // END Challenge #4
     }
 }

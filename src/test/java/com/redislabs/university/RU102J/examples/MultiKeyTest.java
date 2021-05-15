@@ -46,6 +46,13 @@ public class MultiKeyTest {
         jedis.close();
     }
 
+    /**
+     * 1st: learn pipeline:
+     *  p = jedis.pipelined()
+     *  xxx commands
+     *  yyy commands
+     *  p.sync()
+     */
     @Test
     public void testPipeline() {
         Long siteId = 1L;
@@ -63,6 +70,14 @@ public class MultiKeyTest {
         assertThat(saddResponse.get(), is(1L));
     }
 
+
+    /**
+     * 2nd: learn Transaction: (looks similar to pipeline)
+     *  t = jedis.multi()
+     *  xxx commands
+     *  yyy commands
+     *  t.exec()
+     */
     @Test
     public void testTransaction() {
         Long siteId = 1L;

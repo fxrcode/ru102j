@@ -28,15 +28,31 @@ public class SiteGeoDaoRedisImpl implements SiteGeoDao {
         }
     }
 
+    /**
+     * Week 3: Optional: Bonus Challenge
+     * @return
+     */
     @Override
     public Set<Site> findAll() {
         try (Jedis jedis = jedisPool.getResource()) {
             Set<String> keys = jedis.zrange(RedisSchema.getSiteGeoKey(), 0, -1);
             Set<Site> sites = new HashSet<>(keys.size());
+            Map<String, Response<Map<String, String>>> site2resp = new HashMap<>(keys.size());
+            Pipeline p = jedis.pipelined();
             for (String key : keys) {
-                Map<String, String> site = jedis.hgetAll(key);
-                if (!site.isEmpty()) {
-                    sites.add(new Site(site));
+                Response<Map<String, String>> mapResponse = p.hgetAll(key);
+                if (mapResponse != null) {
+//                    sites.add(new Site(site));
+                    site2resp.putIfAbsent(key, mapResponse);
+                }
+            }
+            p.sync();
+
+            for (String key: keys) {
+                if (site2resp.containsKey(key)) {
+                    Map<String, String> site = site2resp.get(key).get();
+                    if (!site.isEmpty())
+                        sites.add(new Site(site));
                 }
             }
             return sites;

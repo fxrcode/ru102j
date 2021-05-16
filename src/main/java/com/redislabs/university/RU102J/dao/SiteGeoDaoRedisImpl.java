@@ -43,6 +43,10 @@ public class SiteGeoDaoRedisImpl implements SiteGeoDao {
         }
     }
 
+    /**
+     * @param query: GeoQuery type to encapsulates the params sent to our REST API.
+     * @return
+     */
     @Override
     public Set<Site> findByGeo(GeoQuery query) {
         if (query.onlyExcessCapacity()) {

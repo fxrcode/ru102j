@@ -13,6 +13,10 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+/**
+ * Redis Stream 101.
+ * You can study ru202 to deep dive Redis Streams.
+ */
 public class StreamsTest {
     private Jedis jedis;
     private String streamKey;

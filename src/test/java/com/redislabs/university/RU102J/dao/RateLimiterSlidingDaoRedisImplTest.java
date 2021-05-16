@@ -47,7 +47,7 @@ public class RateLimiterSlidingDaoRedisImplTest {
         keyManager.deleteKeys(jedis);
     }
 
-    @Ignore
+//    @Ignore
     @Test
     public void hit() {
         int exceptionCount = 0;
@@ -64,7 +64,7 @@ public class RateLimiterSlidingDaoRedisImplTest {
         assertThat(exceptionCount, is(0));
     }
 
-    @Ignore
+//    @Ignore
     @Test
     public void hitOutsideLimit() {
         int exceptionCount = 0;
@@ -81,7 +81,7 @@ public class RateLimiterSlidingDaoRedisImplTest {
         assertThat(exceptionCount, is(2));
     }
 
-    @Ignore
+//    @Ignore
     @Test
     public void hitOutsideWindow() throws InterruptedException {
         int exceptionCount = 0;

@@ -125,7 +125,7 @@ public class SiteGeoDaoRedisImplTest {
     }
 
     // Challenge #5
-    @Ignore
+//    @Ignore
     @Test
     public void findByGeoWithExcessCapacity() {
         SiteGeoDao siteDao = new SiteGeoDaoRedisImpl(jedisPool);
